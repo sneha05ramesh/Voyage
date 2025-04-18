@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.Voyage" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/fb_blue_dark</item>
+        <item name="colorPrimaryContainer">@color/fb_blue_dark</item>
+        <item name="colorOnPrimary">@color/on_fb_blue</item>
+    </style>
+</resources>

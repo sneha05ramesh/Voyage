@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flightsRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Available flights list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerFlights"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false" />
+
+    <ProgressBar
+        android:id="@+id/loadingSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_marginTop="20dp"
+        />
+
+
+    <!-- View booked flights -->
+    <Button
+        android:id="@+id/buttonViewBooked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View My Booked Flights"
+        android:backgroundTint="#1877F2"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>
