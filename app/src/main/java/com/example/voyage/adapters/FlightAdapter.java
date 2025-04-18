@@ -42,6 +42,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         holder.airlineText.setText(flight.airline);
         holder.timeText.setText(flight.departTime + " → " + flight.arriveTime);
         holder.durationText.setText("Duration: " + flight.duration);
+        holder.priceText.setText("Price: $" + flight.price);
         holder.bookButton.setOnClickListener(v -> bookListener.onBook(flight));
     }
 
@@ -51,7 +52,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
     }
 
     static class FlightViewHolder extends RecyclerView.ViewHolder {
-        TextView airlineText, timeText, durationText;
+        TextView airlineText, timeText, durationText, priceText;
         Button bookButton;
 
         public FlightViewHolder(@NonNull View itemView) {
@@ -59,6 +60,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
             airlineText = itemView.findViewById(R.id.textAirline);
             timeText = itemView.findViewById(R.id.textTime);
             durationText = itemView.findViewById(R.id.textDuration);
+            priceText = itemView.findViewById(R.id.textPrice); // NEW
             bookButton = itemView.findViewById(R.id.buttonBook);
         }
     }
