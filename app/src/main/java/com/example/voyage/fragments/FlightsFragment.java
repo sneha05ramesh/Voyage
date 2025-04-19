@@ -1,6 +1,8 @@
 package com.example.voyage.fragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import com.example.voyage.network.ApiClientKiwi;
 import com.example.voyage.network.KiwiApi;
 import com.example.voyage.response.KiwiFlightResponse;
 import com.example.voyage.response.TripPlan;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +113,8 @@ public class FlightsFragment extends Fragment {
 
                                 // Get price
                                 String price = itinerary.price.amount;
+                                String flightId = itinerary.id;
+                                String bookingUrl = itinerary.bookingOptions.edges.get(0).node.bookingUrl;
 
                                 // Get destination city name
                                 String destination = mainSegment.segment.destination.station.city.name;
@@ -126,7 +132,9 @@ public class FlightsFragment extends Fragment {
                                         formatApiDateTime(arrTime),
                                         duration,
                                         destination,
-                                        "$" + price
+                                        "$" + price,
+                                        flightId,
+                                        bookingUrl
                                 ));
                             } catch (Exception e) {
                                 Log.e("Flight Parsing", "Error parsing flight: " + e.getMessage());
@@ -187,6 +195,25 @@ public class FlightsFragment extends Fragment {
     }
 
     private void bookFlight(Flight flight) {
-        // Add booking behavior here if needed
+        try {
+            if (flight.bookingUrl != null && !flight.bookingUrl.isEmpty()) {
+                String fullUrl = "https://www.kiwi.com" + flight.bookingUrl;
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl));
+                startActivity(browserIntent);
+            }
+        } catch (Exception e) {
+            Log.e("Booking URL", "Invalid booking URL: " + e.getMessage());
+        }
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .collection("itineraries")
+                .document(tripPlan.destination)
+                .collection("flights")
+                .add(flight)
+                .addOnSuccessListener(docRef -> Log.d("Firestore", "Flight booked and saved"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error saving flight: " + e.getMessage()));
     }
 }

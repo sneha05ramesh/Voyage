@@ -18,6 +18,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
 
     private List<Flight> flightList;
     private OnFlightBookListener bookListener;
+    private boolean isBookedMode = false;
 
     public interface OnFlightBookListener {
         void onBook(Flight flight);
@@ -26,6 +27,10 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
     public FlightAdapter(List<Flight> flightList, OnFlightBookListener bookListener) {
         this.flightList = flightList;
         this.bookListener = bookListener;
+    }
+
+    public void setBookedMode(boolean bookedMode) {
+        this.isBookedMode = bookedMode;
     }
 
     @NonNull
@@ -42,7 +47,9 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         holder.airlineText.setText(flight.airline);
         holder.timeText.setText(flight.departTime + " → " + flight.arriveTime);
         holder.durationText.setText("Duration: " + flight.duration);
-        holder.priceText.setText("Price: $" + flight.price);
+        holder.priceText.setText("Price: " + flight.price);
+
+        holder.bookButton.setText(isBookedMode ? "Cancel" : "Book");
         holder.bookButton.setOnClickListener(v -> bookListener.onBook(flight));
     }
 
@@ -60,7 +67,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
             airlineText = itemView.findViewById(R.id.textAirline);
             timeText = itemView.findViewById(R.id.textTime);
             durationText = itemView.findViewById(R.id.textDuration);
-            priceText = itemView.findViewById(R.id.textPrice); // NEW
+            priceText = itemView.findViewById(R.id.textPrice);
             bookButton = itemView.findViewById(R.id.buttonBook);
         }
     }

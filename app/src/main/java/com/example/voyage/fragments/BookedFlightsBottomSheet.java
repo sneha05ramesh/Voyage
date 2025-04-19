@@ -68,32 +68,33 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
                 .get()
                 .addOnSuccessListener(query -> {
                     List<Flight> flights = new ArrayList<>();
+                    List<String> docIds = new ArrayList<>();
+
                     for (QueryDocumentSnapshot doc : query) {
                         Flight f = doc.toObject(Flight.class);
-                        f.airline += " (ID: " + doc.getId() + ")";
                         flights.add(f);
+                        docIds.add(doc.getId());
                     }
 
                     FlightAdapter adapter = new FlightAdapter(flights, flight -> {
-                        // Remove airline ID suffix for matching
-                        String rawAirline = flight.airline.replaceAll("\\s\\(ID:.*\\)", "");
+                        // Find document ID to delete
+                        int index = flights.indexOf(flight);
+                        if (index != -1 && index < docIds.size()) {
+                            String docId = docIds.get(index);
 
-                        FirebaseFirestore.getInstance()
-                                .collection("users")
-                                .document(uid)
-                                .collection("itineraries")
-                                .document(destination)
-                                .collection("flights")
-                                .whereEqualTo("airline", rawAirline)
-                                .get()
-                                .addOnSuccessListener(snapshot -> {
-                                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                                        doc.getReference().delete();
-                                    }
-                                    dismiss(); // close after cancel
-                                });
+                            FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(uid)
+                                    .collection("itineraries")
+                                    .document(destination)
+                                    .collection("flights")
+                                    .document(docId)
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> dismiss());
+                        }
                     });
 
+                    adapter.setBookedMode(true); // Show "Cancel" button instead of "Book"
                     recycler.setAdapter(adapter);
                 });
     }
