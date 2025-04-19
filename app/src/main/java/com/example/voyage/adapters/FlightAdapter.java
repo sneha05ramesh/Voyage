@@ -14,19 +14,19 @@ import com.example.voyage.models.Flight;
 
 import java.util.List;
 
-public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
+public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.ViewHolder> {
 
-    private List<Flight> flightList;
-    private OnFlightBookListener bookListener;
+    private List<Flight> flights;
     private boolean isBookedMode = false;
+    private final FlightClickListener listener;
 
-    public interface OnFlightBookListener {
-        void onBook(Flight flight);
+    public interface FlightClickListener {
+        void onFlightClick(Flight flight);
     }
 
-    public FlightAdapter(List<Flight> flightList, OnFlightBookListener bookListener) {
-        this.flightList = flightList;
-        this.bookListener = bookListener;
+    public FlightAdapter(List<Flight> flights, FlightClickListener listener) {
+        this.flights = flights;
+        this.listener = listener;
     }
 
     public void setBookedMode(boolean bookedMode) {
@@ -35,40 +35,41 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
 
     @NonNull
     @Override
-    public FlightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_flight, parent, false);
-        return new FlightViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FlightViewHolder holder, int position) {
-        Flight flight = flightList.get(position);
-        holder.airlineText.setText(flight.airline);
-        holder.timeText.setText(flight.departTime + " → " + flight.arriveTime);
-        holder.durationText.setText("Duration: " + flight.duration);
-        holder.priceText.setText("Price: " + flight.price);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Flight flight = flights.get(position);
+        holder.airline.setText(flight.airline);
+        //holder.time.setText(flight.departureTime + " → " + flight.arrivalTime);
+        holder.duration.setText("Duration: " + flight.duration);
+        holder.price.setText("Price: " + flight.price);
 
-        holder.bookButton.setText(isBookedMode ? "Cancel" : "Book");
-        holder.bookButton.setOnClickListener(v -> bookListener.onBook(flight));
+        // Toggle button label and function
+        holder.buttonBook.setText(isBookedMode ? "Cancel" : "Book");
+
+        holder.buttonBook.setOnClickListener(v -> listener.onFlightClick(flight));
     }
 
     @Override
     public int getItemCount() {
-        return flightList.size();
+        return flights.size();
     }
 
-    static class FlightViewHolder extends RecyclerView.ViewHolder {
-        TextView airlineText, timeText, durationText, priceText;
-        Button bookButton;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView airline, time, duration, price;
+        Button buttonBook;
 
-        public FlightViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            airlineText = itemView.findViewById(R.id.textAirline);
-            timeText = itemView.findViewById(R.id.textTime);
-            durationText = itemView.findViewById(R.id.textDuration);
-            priceText = itemView.findViewById(R.id.textPrice);
-            bookButton = itemView.findViewById(R.id.buttonBook);
+            airline = itemView.findViewById(R.id.textAirline);
+            time = itemView.findViewById(R.id.textTime);
+            duration = itemView.findViewById(R.id.textDuration);
+            price = itemView.findViewById(R.id.textPrice);
+            buttonBook = itemView.findViewById(R.id.buttonBook);
         }
     }
 }

@@ -60,6 +60,13 @@ public class FlightsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerFlights);
         progressBar = view.findViewById(R.id.loadingSpinner);
 
+        View bookedButton = view.findViewById(R.id.buttonViewBooked);
+        bookedButton.setOnClickListener(v -> {
+            BookedFlightsBottomSheet sheet = BookedFlightsBottomSheet.newInstance(tripPlan);
+            sheet.show(getParentFragmentManager(), "BookedFlightsSheet");
+        });
+
+
         if (getArguments() != null) {
             tripPlan = (TripPlan) getArguments().getSerializable(ARG_TRIP);
             fetchFlights();
