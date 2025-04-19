@@ -10,6 +10,7 @@ import com.example.voyage.fragments.FlightsFragment;
 import com.example.voyage.fragments.HotelsFragment;
 import com.example.voyage.fragments.ItineraryFragment;
 import com.example.voyage.fragments.RecommendationsFragment;
+import com.example.voyage.fragments.TravelUpdatesFragment;
 import com.example.voyage.response.TripPlan;
 
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ public class TabAdapter extends FragmentStateAdapter {
                         new ArrayList<>(tripPlan.interests));
             case 4:
                 return new ExpensesFragment();
-
-
+            case 5:
+                return TravelUpdatesFragment.newInstance(tripPlan); //
             default:
                 return new Fragment();
         }
@@ -48,6 +49,6 @@ public class TabAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 6; //
     }
 }

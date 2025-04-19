@@ -14,6 +14,7 @@ okhttp = "4.11.0"
 gson = "2.10.1"
 playServicesMaps = "19.2.0"
 glide = "4.16.0"
+playServicesLocation = "21.3.0"
 
 
 
@@ -33,6 +34,7 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]
