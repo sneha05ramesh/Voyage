@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.voyage.fragments.ExpensesFragment;
 import com.example.voyage.fragments.FlightsFragment;
 import com.example.voyage.fragments.HotelsFragment;
 import com.example.voyage.fragments.ItineraryFragment;
@@ -35,8 +36,11 @@ public class TabAdapter extends FragmentStateAdapter {
             case 3:
                 return RecommendationsFragment.newInstance(
                         tripPlan.destination,
-                        new ArrayList<>(tripPlan.interests)
-                );
+                        new ArrayList<>(tripPlan.interests));
+            case 4:
+                return new ExpensesFragment();
+
+
             default:
                 return new Fragment();
         }
@@ -44,6 +48,6 @@ public class TabAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

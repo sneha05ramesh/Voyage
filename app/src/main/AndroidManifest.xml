@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Voyage"
         tools:targetApi="31">
         <activity
+            android:name=".SafetyAlertsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ItineraryDetailsActivity"
             android:exported="false" />
         <activity
@@ -24,7 +27,7 @@
             android:name=".NewTripActivity"
             android:exported="false" />
         <activity
-            android:name=".adapters.DashboardActivity"
+            android:name=".DashboardActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
