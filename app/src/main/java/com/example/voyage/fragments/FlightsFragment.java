@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voyage.CountryCodeMapper;
 import com.example.voyage.R;
 import com.example.voyage.adapters.FlightAdapter;
 import com.example.voyage.models.Flight;
@@ -68,8 +69,18 @@ public class FlightsFragment extends Fragment {
     private void fetchFlights() {
         progressBar.setVisibility(View.VISIBLE);
 
-        String from = "City:" + tripPlan.fromCity.toLowerCase().replace(" ", "_");
-        String to = "City:" + tripPlan.destination.toLowerCase().replace(" ", "_");
+        String fromCode = CountryCodeMapper.getAirportCode(tripPlan.fromCity.toLowerCase());
+        String toCode = CountryCodeMapper.getAirportCode(tripPlan.destination.toLowerCase());
+
+
+        if (fromCode == null || toCode == null) {
+            showErrorDialog("Country not supported. Try a popular international destination.");
+            return;
+        }
+
+        String from = "Country:" + fromCode;
+        String to = "Country:" + toCode;
+
 
         KiwiApi api = ApiClientKiwi.getClient().create(KiwiApi.class);
         Call<KiwiFlightResponse> call = api.getFlights(
