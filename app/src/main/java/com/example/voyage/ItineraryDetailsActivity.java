@@ -35,7 +35,6 @@ public class ItineraryDetailsActivity extends AppCompatActivity {
             String summary = "Destination: " + tripPlan.destination + "\n" +
                     "Days: " + tripPlan.days + "\n" +
                     "Budget: " + tripPlan.budget + "\n" +
-                    "Travel Mode: " + tripPlan.travelMode + "\n" +
                     "Interests: " + String.join(", ", tripPlan.interests);
             textSummary.setText(summary);
         }

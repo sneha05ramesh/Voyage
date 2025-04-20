@@ -19,12 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voyage.R;
 import com.example.voyage.adapters.HotelAdapter;
-import com.example.voyage.fragments.BookedHotelsBottomSheet;
 import com.example.voyage.models.Hotel;
 import com.example.voyage.response.TripPlan;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +41,6 @@ public class HotelsFragment extends Fragment {
     private TripPlan tripPlan;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private List<Hotel> hotelList = new ArrayList<>();
 
     public static HotelsFragment newInstance(TripPlan tripPlan) {
         HotelsFragment fragment = new HotelsFragment();
@@ -70,8 +76,7 @@ public class HotelsFragment extends Fragment {
                     .add(hotel)
                     .addOnSuccessListener(docRef -> {
                         Toast.makeText(getContext(), "Hotel booked!", Toast.LENGTH_SHORT).show();
-                        // Open Google search for the hotel
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + Uri.encode(hotel.getName())));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + Uri.encode(hotel.getName() + " " + hotel.getAddress())));
                         startActivity(intent);
                     });
         });
@@ -82,13 +87,58 @@ public class HotelsFragment extends Fragment {
             sheet.show(getParentFragmentManager(), "BookedHotelsBottomSheet");
         });
 
-        progressBar.setVisibility(View.GONE);
+        // ✅ Replaces dummy data with Google Places API
+        if (tripPlan != null && tripPlan.destination != null) {
+            String destination = tripPlan.destination;
+            String query = "hotels in " + destination;
 
-        // Dummy hotel list (you can replace this with API later)
-        hotelList.add(new Hotel("Grand Palace Hotel", "123 Main St, New York", 4.5, "place123"));
-        hotelList.add(new Hotel("Seaside Resort", "456 Ocean View, Miami", 4.2, "place456"));
-        hotelList.add(new Hotel("Mountain Lodge", "789 Hilltop, Denver", 4.7, "place789"));
+            String apiKey = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE"; // Replace this with your actual key
+            String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + Uri.encode(query) + "&key=" + apiKey;
 
-        adapter.setHotels(hotelList);
+            progressBar.setVisibility(View.VISIBLE);
+
+            new Thread(() -> {
+                try {
+                    URL apiUrl = new URL(url);
+                    HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+
+                    InputStream is = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    JSONObject jsonResponse = new JSONObject(result.toString());
+                    JSONArray results = jsonResponse.getJSONArray("results");
+
+                    List<Hotel> hotels = new ArrayList<>();
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject item = results.getJSONObject(i);
+                        String name = item.getString("name");
+                        String address = item.getString("formatted_address");
+                        double rating = item.has("rating") ? item.getDouble("rating") : 0.0;
+                        String placeId = item.getString("place_id");
+
+                        hotels.add(new Hotel(name, address, rating, placeId));
+                    }
+
+                    requireActivity().runOnUiThread(() -> {
+                        adapter.setHotels(hotels);
+                        progressBar.setVisibility(View.GONE);
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Failed to load hotels", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                    });
+                }
+            }).start();
+        }
     }
 }

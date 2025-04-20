@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.voyage.R;
 import com.example.voyage.response.TripActivity;
 import com.example.voyage.response.TripDay;
 import com.example.voyage.response.TripPlan;
@@ -30,7 +31,7 @@ public class ItineraryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
+        return inflater.inflate(R.layout.fragment_itinerary, container, false);  // custom layout
     }
 
     @Override
@@ -39,19 +40,18 @@ public class ItineraryFragment extends Fragment {
             tripPlan = (TripPlan) getArguments().getSerializable(ARG_TRIP);
         }
 
-        TextView textView = view.findViewById(android.R.id.text1);
+        TextView textView = view.findViewById(R.id.itineraryTextView);
         StringBuilder sb = new StringBuilder();
 
         if (tripPlan != null && tripPlan.itinerary != null) {
             for (TripDay day : tripPlan.itinerary) {
-                sb.append("🗓 Day ").append(day.day).append("\n");
+                sb.append("🗓 Day ").append(day.day).append("\n\n");
                 for (TripActivity act : day.activities) {
-                    sb.append("• ").append(act.time)
+                    sb.append("⏰ ").append(act.time)
                             .append(" - ").append(act.activity)
-                            .append(" @ ").append(act.location)
-                            .append("\n");
+                            .append("\n📍 ").append(act.location)
+                            .append("\n\n");
                 }
-                sb.append("\n");
             }
         }
 

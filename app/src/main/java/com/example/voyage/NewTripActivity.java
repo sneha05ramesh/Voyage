@@ -3,6 +3,7 @@ package com.example.voyage;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +16,13 @@ import com.example.voyage.response.TripActivity;
 import com.example.voyage.response.TripDay;
 import com.example.voyage.response.TripPlan;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,21 +34,22 @@ public class NewTripActivity extends AppCompatActivity {
     TextView interestsPreview;
     RadioGroup budgetGroup;
     Button generateButton;
+    ProgressBar loadingSpinner;
 
     String selectedStartDate = "";
     String selectedEndDate = "";
 
     final String[] interestOptions = {
-            "art", "theater", "museums", "history", "architecture", "cultural events",
-            "hiking", "wildlife", "beaches", "national parks", "adventure sports",
-            "cuisine", "street food", "wine tasting", "breweries", "fine dining",
-            "spa", "yoga retreats", "relaxation", "resorts",
-            "shopping", "luxury brands", "local markets",
-            "theme parks", "zoos", "kid-friendly activities",
-            "bars", "clubs", "live music", "theater shows",
-            "sports events", "fitness", "cycling",
-            "tech", "innovation", "conventions",
-            "photography", "scenic views"
+            "Art", "Theater", "Museums", "History", "Architecture", "Cultural events",
+            "Hiking", "Wildlife", "Beaches", "National parks", "Adventure sports",
+            "Cuisine", "Street food", "Wine tasting", "Breweries", "Fine dining",
+            "Spa", "Yoga retreats", "Relaxation", "Resorts",
+            "Shopping", "Luxury brands", "Local markets",
+            "Theme parks", "Zoos", "Kid-friendly activities",
+            "Bars", "Clubs", "Live music", "Theater shows",
+            "Sports events", "Fitness", "Cycling",
+            "Tech", "Innovation", "Conventions",
+            "Photography", "Scenic views"
     };
     boolean[] selectedInterests = new boolean[interestOptions.length];
     List<String> selectedList = new ArrayList<>();
@@ -60,6 +66,7 @@ public class NewTripActivity extends AppCompatActivity {
         interestsPreview = findViewById(R.id.interestsPreview);
         budgetGroup = findViewById(R.id.budgetGroup);
         generateButton = findViewById(R.id.generateButton);
+        loadingSpinner = findViewById(R.id.loadingSpinner); // make sure this exists in XML
 
         // Date pickers
         startDateInput.setOnClickListener(v -> showDatePicker(true));
@@ -108,7 +115,22 @@ public class NewTripActivity extends AppCompatActivity {
                 return;
             }
 
-            int numDays = 3; // You can calculate from start-end date if needed
+            int numDays = 3;
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date start = sdf.parse(selectedStartDate);
+                Date end = sdf.parse(selectedEndDate);
+                long diffInMillis = end.getTime() - start.getTime();
+                numDays = (int) TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS) + 1;
+            } catch (Exception e) {
+                e.printStackTrace(); // Keep default 3 if error
+            }
+
+            // Convert interests to lowercase for backend
+            List<String> interestsLower = new ArrayList<>();
+            for (String interest : selectedList) {
+                interestsLower.add(interest.toLowerCase());
+            }
 
             String budget = "medium"; // default
             int budgetId = budgetGroup.getCheckedRadioButtonId();
@@ -118,34 +140,25 @@ public class NewTripActivity extends AppCompatActivity {
             TripRequest request = new TripRequest(
                     numDays,
                     destination,
-                    selectedList,
+                    interestsLower,
                     budget,
                     "public transport"
             );
+
+            loadingSpinner.setVisibility(View.VISIBLE);
 
             TripService service = ApiClient.getClient().create(TripService.class);
             service.getItinerary(request).enqueue(new Callback<ItineraryResponse>() {
                 @Override
                 public void onResponse(Call<ItineraryResponse> call, Response<ItineraryResponse> response) {
+                    loadingSpinner.setVisibility(View.GONE);
+
                     if (response.isSuccessful() && response.body() != null) {
                         TripPlan tripPlan = response.body().plan;
                         tripPlan.fromCity = fromCity;
-                        StringBuilder sb = new StringBuilder();
-
-                        for (TripDay tripDay : tripPlan.itinerary) {
-                            sb.append("Day ").append(tripDay.day).append(":\n");
-                            for (TripActivity act : tripDay.activities) {
-                                sb.append("• ").append(act.time)
-                                        .append(" - ").append(act.activity)
-                                        .append(" @ ").append(act.location)
-                                        .append("\n");
-                            }
-                            sb.append("\n");
-                        }
-
 
                         Intent intent = new Intent(NewTripActivity.this, ReviewItineraryActivity.class);
-                        intent.putExtra("trip_plan", tripPlan);// Pass the plan object
+                        intent.putExtra("trip_plan", tripPlan);
                         startActivity(intent);
 
                     } else {
@@ -155,6 +168,7 @@ public class NewTripActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ItineraryResponse> call, Throwable t) {
+                    loadingSpinner.setVisibility(View.GONE);
                     Toast.makeText(NewTripActivity.this, "Call failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
@@ -178,6 +192,9 @@ public class NewTripActivity extends AppCompatActivity {
                         endDateInput.setText(formattedDate);
                     }
                 }, year, month, day);
+
+        // Disable past dates
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 }

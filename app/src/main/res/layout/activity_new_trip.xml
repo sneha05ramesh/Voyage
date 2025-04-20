@@ -101,5 +101,14 @@
             android:layout_height="wrap_content"
             android:text="Generate Itinerary"
             android:textColor="#FFFFFF"/>
+
+        <ProgressBar
+            android:id="@+id/loadingSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            style="?android:attr/progressBarStyleLarge" />
+
     </LinearLayout>
 </ScrollView>
