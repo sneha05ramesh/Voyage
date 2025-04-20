@@ -33,7 +33,7 @@ public class TabAdapter extends FragmentStateAdapter {
             case 1:
                 return FlightsFragment.newInstance(tripPlan);
             case 2:
-                return HotelsFragment.newInstance(tripPlan.destination);
+                return HotelsFragment.newInstance(tripPlan);
             case 3:
                 return RecommendationsFragment.newInstance(
                         tripPlan.destination,

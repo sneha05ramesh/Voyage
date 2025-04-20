@@ -23,6 +23,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
     private List<Hotel> hotelList;
     private final Context context;
     private final HotelClickListener clickListener;
+    private boolean bookedMode = false;
 
     public interface HotelClickListener {
         void onHotelDetailsClick(Hotel hotel);
@@ -32,13 +33,20 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
         this.context = context;
         this.hotelList = new ArrayList<>();
         this.clickListener = clickListener;
-        Log.d(TAG, "Adapter created");
+    }
+
+    public void setBookedMode(boolean bookedMode) {
+        this.bookedMode = bookedMode;
+    }
+
+    public void setHotels(List<Hotel> hotels) {
+        this.hotelList = hotels;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public HotelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d(TAG, "Creating new ViewHolder");
         View view = LayoutInflater.from(context).inflate(R.layout.item_hotel, parent, false);
         return new HotelViewHolder(view);
     }
@@ -46,20 +54,12 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
     @Override
     public void onBindViewHolder(@NonNull HotelViewHolder holder, int position) {
         Hotel hotel = hotelList.get(position);
-        Log.d(TAG, "Binding hotel at position " + position + ": " + hotel.getName());
-
         holder.hotelName.setText(hotel.getName());
         holder.hotelAddress.setText(hotel.getAddress());
+        holder.hotelRating.setRating((float) hotel.getRating());
 
-        // Check if rating bar is available before setting rating
-        if (holder.hotelRating != null) {
-            holder.hotelRating.setRating((float) hotel.getRating());
-        } else {
-            Log.w(TAG, "RatingBar is null for hotel: " + hotel.getName());
-        }
-
+        holder.bookButton.setText(bookedMode ? "Cancel" : "Book Now");
         holder.bookButton.setOnClickListener(v -> {
-            Log.d(TAG, "Book button clicked for hotel: " + hotel.getName());
             if (clickListener != null) {
                 clickListener.onHotelDetailsClick(hotel);
             }
@@ -71,15 +71,8 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
         return hotelList.size();
     }
 
-    public void setHotels(List<Hotel> hotels) {
-        Log.d(TAG, "Setting " + hotels.size() + " hotels to adapter");
-        this.hotelList = hotels;
-        notifyDataSetChanged();
-    }
-
     public static class HotelViewHolder extends RecyclerView.ViewHolder {
-        TextView hotelName;
-        TextView hotelAddress;
+        TextView hotelName, hotelAddress;
         RatingBar hotelRating;
         Button bookButton;
 
@@ -87,22 +80,8 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.HotelViewHol
             super(itemView);
             hotelName = itemView.findViewById(R.id.hotel_name);
             hotelAddress = itemView.findViewById(R.id.hotel_location);
-
-            // Try to find the rating bar - might be null if not in layout
-            try {
-                hotelRating = itemView.findViewById(R.id.hotel_rating);
-            } catch (Exception e) {
-                Log.e("HotelAdapter", "Error finding hotel_rating view: " + e.getMessage());
-            }
-
+            hotelRating = itemView.findViewById(R.id.hotel_rating);
             bookButton = itemView.findViewById(R.id.book_hotel_button);
-
-            // Log what was found/not found
-            Log.d("HotelAdapter", "ViewHolder created: " +
-                    "name=" + (hotelName != null) + ", " +
-                    "address=" + (hotelAddress != null) + ", " +
-                    "rating=" + (hotelRating != null) + ", " +
-                    "button=" + (bookButton != null));
         }
     }
 }
