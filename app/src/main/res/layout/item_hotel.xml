@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,35 +17,38 @@
             android:id="@+id/hotel_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Hotel Name"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
-            tools:text="Hotel Name" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/hotel_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:text="123 Main St, City, Country"
             android:textSize="14sp"
-            tools:text="123 Main St, City, Country" />
+            android:textColor="#555555"
+            android:layout_marginTop="4dp" />
 
         <RatingBar
             android:id="@+id/hotel_rating"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:isIndicator="true"
             android:numStars="5"
-            android:stepSize="0.1" />
+            android:stepSize="0.1"
+            android:isIndicator="true"
+            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/book_hotel_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Book Now" />
+            android:text="Book Now"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_blue_button"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 

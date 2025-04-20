@@ -6,35 +6,38 @@
     android:background="#FAFAFA"
     android:padding="24dp">
 
+    <!-- Scrollable container for all days -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/reviewText"
+        <LinearLayout
+            android:id="@+id/dayContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Itinerary goes here..."
-            android:textSize="16sp"
-            android:textColor="#333333"
-            android:lineSpacingExtra="8dp"
-            android:textIsSelectable="true" />
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp" />
     </ScrollView>
 
+    <!-- Action buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="8dp">
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1877F2"
+            android:background="@drawable/rounded_blue_button" />
+
 
         <View
             android:layout_width="16dp"
@@ -46,6 +49,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Save"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1877F2"
+            android:background="@drawable/rounded_blue_button" />
     </LinearLayout>
 </LinearLayout>

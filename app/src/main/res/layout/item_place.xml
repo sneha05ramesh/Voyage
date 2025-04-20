@@ -2,27 +2,35 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="6dp"
     android:elevation="4dp"
-    android:padding="10dp">
+    android:backgroundTint="#FFFFFF"
+    android:radius="16dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/place_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Name"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textColor="#222222"
+            android:layout_marginBottom="4dp" />
 
         <TextView
             android:id="@+id/place_address"
-            android:textSize="14sp"
-            android:textColor="#666"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="123 Main St, City, Country"
+            android:textSize="14sp"
+            android:textColor="#666666" />
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

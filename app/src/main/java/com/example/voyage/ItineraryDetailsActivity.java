@@ -30,7 +30,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
-        // Set summary
+        // Set summary text
         if (tripPlan != null) {
             String summary = "Destination: " + tripPlan.destination + "\n" +
                     "Days: " + tripPlan.days + "\n" +
@@ -39,18 +39,23 @@ public class ItineraryDetailsActivity extends AppCompatActivity {
             textSummary.setText(summary);
         }
 
-        // Setup ViewPager adapter
+        // Setup adapter
         tabAdapter = new TabAdapter(this, tripPlan);
         viewPager.setAdapter(tabAdapter);
 
+        // Enable scrolling mode to prevent wrapping
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        // Set labels with emojis
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
-                case 0: tab.setText("Itinerary"); break;
-                case 1: tab.setText("Flights"); break;
-                case 2: tab.setText("Hotels"); break;
-                case 3: tab.setText("Recs"); break;
-                case 4: tab.setText("Expenses"); break;
-                case 5: tab.setText("Updates"); break;
+                case 0: tab.setText("🗓 Itinerary"); break;
+                case 1: tab.setText("✈️ Flights"); break;
+                case 2: tab.setText("🏨 Hotels"); break;
+                case 3: tab.setText("📍 Explore"); break;
+                case 4: tab.setText("💸 Spend"); break;
+                case 5: tab.setText("🌦️ Weather"); break;
+
             }
         }).attach();
     }

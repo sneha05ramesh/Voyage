@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FAFAFA">
 
     <!-- Available flights list -->
     <androidx.recyclerview.widget.RecyclerView
@@ -22,18 +23,15 @@
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         style="?android:attr/progressBarStyleLarge"
-        android:layout_marginTop="20dp"
-        />
+        android:layout_marginTop="20dp" />
 
-
-    <!-- View booked flights -->
     <Button
         android:id="@+id/buttonViewBooked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View My Booked Flights"
-        android:backgroundTint="#1877F2"
         android:textColor="@android:color/white"
-        android:layout_marginTop="12dp" />
-
+        android:background="@drawable/rounded_blue_button"
+        android:layout_marginTop="16dp"
+        android:padding="12dp" />
 </LinearLayout>

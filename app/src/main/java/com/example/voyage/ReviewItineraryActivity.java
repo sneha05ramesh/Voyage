@@ -1,9 +1,12 @@
-// 📄 ReviewItineraryActivity.java
 package com.example.voyage;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,32 +23,43 @@ import java.util.Map;
 
 public class ReviewItineraryActivity extends AppCompatActivity {
 
-    TextView reviewText;
     Button saveButton, cancelButton;
     TripPlan tripPlan;
+    LinearLayout dayContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_itinerary);
 
-        reviewText = findViewById(R.id.reviewText);
+        dayContainer = findViewById(R.id.dayContainer);
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
 
         tripPlan = (TripPlan) getIntent().getSerializableExtra("trip_plan");
 
         if (tripPlan != null) {
-            StringBuilder sb = new StringBuilder();
+            LayoutInflater inflater = LayoutInflater.from(this);
+
             for (TripDay tripDay : tripPlan.itinerary) {
-                sb.append("\uD83D\uDCC5 Day ").append(tripDay.day).append("\n\n");
+                View dayView = inflater.inflate(R.layout.item_day_block, dayContainer, false);
+
+                TextView dayTitle = dayView.findViewById(R.id.dayTitle);
+                TextView dayContent = dayView.findViewById(R.id.dayContent);
+                ImageView dayImage = dayView.findViewById(R.id.dayImage);
+
+                dayTitle.setText("Day " + tripDay.day);
+                dayImage.setImageResource(R.drawable.sample_day_image); // Use your own image here
+
+                StringBuilder content = new StringBuilder();
                 for (TripActivity act : tripDay.activities) {
-                    sb.append("\uD83D\uDD52 ").append(act.time).append(" - ")
-                            .append(act.activity).append("\n")
-                            .append("\uD83D\uDCCD ").append(act.location).append("\n\n");
+                    content.append("🕗 ").append(act.time).append(" - ").append(act.activity).append("\n")
+                            .append("📍 ").append(act.location).append("\n\n");
                 }
+
+                dayContent.setText(content.toString().trim());
+                dayContainer.addView(dayView);
             }
-            reviewText.setText(sb.toString());
         }
 
         cancelButton.setOnClickListener(v -> finish());

@@ -40,6 +40,10 @@ dependencies {
     implementation libs.play.services.maps
     implementation libs.play.services.location
     testImplementation libs.junit
+    testImplementation libs.core
+    testImplementation libs.ext.junit
+    testImplementation libs.rules
+    testImplementation libs.espresso.core
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     implementation(libs.retrofit)
@@ -47,6 +51,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation libs.glide
     annotationProcessor libs.glide.compiler
+    androidTestImplementation 'androidx.test:rules:1.5.0'
 
 
 

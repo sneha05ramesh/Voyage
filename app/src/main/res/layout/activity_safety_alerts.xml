@@ -1,9 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
 
+    <!-- Region Label -->
     <TextView
         android:id="@+id/regionLabel"
         android:layout_width="match_parent"
@@ -11,10 +14,11 @@
         android:text="Loading region..."
         android:textStyle="bold"
         android:textSize="18sp"
-        android:textColor="#333"
+        android:textColor="#222222"
         android:gravity="center"
-        android:paddingBottom="8dp"/>
+        android:paddingBottom="8dp" />
 
+    <!-- No alerts message -->
     <TextView
         android:id="@+id/noAlertsMessage"
         android:layout_width="match_parent"
@@ -22,15 +26,16 @@
         android:text="No safety alerts in your region 😊"
         android:visibility="gone"
         android:textAlignment="center"
-        android:textColor="#888"
+        android:textColor="#888888"
         android:paddingTop="12dp"
         android:textSize="16sp" />
 
+    <!-- Alerts List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSafety"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
 </LinearLayout>

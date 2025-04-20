@@ -3,102 +3,110 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="#FAFAFA"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Local Attractions -->
+        <!-- Local Attractions Section -->
         <LinearLayout
             android:id="@+id/section_attractions"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Local Attractions"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="#222222"
+                android:layout_marginBottom="8dp" />
 
             <ImageView
                 android:id="@+id/map_attractions"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:layout_marginBottom="8dp"
                 android:scaleType="centerCrop"
-                android:layout_marginTop="4dp" />
+                android:background="@drawable/rounded_image_placeholder" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_attractions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="8dp" />
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
 
-        <!-- Restaurants -->
+        <!-- Restaurants Section -->
         <LinearLayout
             android:id="@+id/section_restaurants"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Restaurants"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="#222222"
+                android:layout_marginBottom="8dp" />
 
             <ImageView
                 android:id="@+id/map_restaurants"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:layout_marginBottom="8dp"
                 android:scaleType="centerCrop"
-                android:layout_marginTop="4dp" />
+                android:background="@drawable/rounded_image_placeholder" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_restaurants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="8dp" />
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
 
-        <!-- Activities -->
+        <!-- Activities Section -->
         <LinearLayout
             android:id="@+id/section_activities"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Activities"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="#222222"
+                android:layout_marginBottom="8dp" />
 
             <ImageView
                 android:id="@+id/map_activities"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:layout_marginBottom="8dp"
                 android:scaleType="centerCrop"
-                android:layout_marginTop="4dp" />
+                android:background="@drawable/rounded_image_placeholder" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_activities"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="8dp" />
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

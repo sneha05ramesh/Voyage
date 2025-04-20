@@ -3,20 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:padding="24dp"
-    android:background="#FAFAFA">
+    android:background="@drawable/welcome_background">
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/ic_travel_logo"
+        android:contentDescription="App Logo" />
 
     <TextView
         android:id="@+id/appTitle"
         android:text="Welcome to Voyage"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:layout_marginBottom="40dp"
-        android:textColor="#333"
+        android:textColor="#333333"
         android:gravity="center"
+        android:layout_marginBottom="40dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/loginButton"
@@ -24,12 +33,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#1877F2"/>
+        android:backgroundTint="#1877F2"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_blue_button" />
 
     <Button
         android:id="@+id/signupButton"
         android:text="Sign Up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#1877F2"/>
+        android:backgroundTint="#1877F2"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_blue_button" />
+
 </LinearLayout>

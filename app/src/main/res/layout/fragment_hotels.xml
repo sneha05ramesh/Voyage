@@ -26,5 +26,8 @@
         android:layout_height="wrap_content"
         android:text="View Booked Hotels"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/rounded_blue_button"
+        android:textColor="@android:color/white" />
 </RelativeLayout>
+
