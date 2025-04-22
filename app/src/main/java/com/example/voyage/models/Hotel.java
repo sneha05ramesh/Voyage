@@ -7,14 +7,16 @@ public class Hotel implements Serializable {
     private String address;
     private double rating;
     private String placeId;
+    private int priceLevel;
 
     public Hotel() {}
 
-    public Hotel(String name, String address, double rating, String placeId) {
+    public Hotel(String name, String address, double rating, String placeId, int priceLevel) {
         this.name = name;
         this.address = address;
         this.rating = rating;
         this.placeId = placeId;
+        this.priceLevel = priceLevel;
     }
 
     public String getName() {
@@ -47,5 +49,13 @@ public class Hotel implements Serializable {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
+    }
+
+    public int getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
     }
 }

@@ -39,7 +39,7 @@ public class TabAdapter extends FragmentStateAdapter {
                         tripPlan.destination,
                         new ArrayList<>(tripPlan.interests));
             case 4:
-                return new ExpensesFragment();
+                return ExpensesFragment.newInstance(tripPlan);
             case 5:
                 return TravelUpdatesFragment.newInstance(tripPlan); //
             default:

@@ -3,7 +3,6 @@ package com.example.voyage.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,70 +12,50 @@ import com.example.voyage.R;
 import com.example.voyage.models.Expense;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.GroupedExpenseViewHolder> {
+public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
 
-    private final List<String> dateKeys = new ArrayList<>();
-    private final Map<String, List<Expense>> groupedExpenses = new LinkedHashMap<>();
+    private final List<Expense> expenses;
 
-    public ExpenseAdapter(List<Expense> expenses) {
-        for (Expense e : expenses) {
-            groupedExpenses.computeIfAbsent(e.date, k -> new ArrayList<>()).add(e);
-        }
-        dateKeys.addAll(groupedExpenses.keySet());
+    public ExpenseAdapter() {
+        this.expenses = new ArrayList<>();
+    }
+
+    public void setExpenses(List<Expense> list) {
+        expenses.clear();
+        expenses.addAll(list);
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public GroupedExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expense_grouped, parent, false);
-        return new GroupedExpenseViewHolder(view);
+    public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expense, parent, false);
+        return new ExpenseViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupedExpenseViewHolder holder, int position) {
-        String date = dateKeys.get(position);
-        List<Expense> expensesForDate = groupedExpenses.get(date);
-
-        holder.dateHeader.setText(date);
-        double total = 0;
-        holder.expenseContainer.removeAllViews();
-
-        for (Expense e : expensesForDate) {
-            total += e.amount;
-
-            View expenseItem = LayoutInflater.from(holder.itemView.getContext())
-                    .inflate(R.layout.item_expense, holder.expenseContainer, false);
-
-            ((TextView) expenseItem.findViewById(R.id.tvMerchant)).setText(e.merchant);
-            ((TextView) expenseItem.findViewById(R.id.tvCategory)).setText(e.category);
-            ((TextView) expenseItem.findViewById(R.id.tvAmount)).setText("$" + e.amount);
-            ((TextView) expenseItem.findViewById(R.id.tvDate)).setText(e.date);
-            ((TextView) expenseItem.findViewById(R.id.tvLocation)).setText(e.location);
-
-            holder.expenseContainer.addView(expenseItem);
-        }
-
-        holder.totalAmount.setText("Total: $" + String.format("%.2f", total));
+    public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
+        Expense expense = expenses.get(position);
+        holder.expenseType.setText(expense.getType());
+        holder.expenseName.setText(expense.getName());
+        holder.expenseAmount.setText("$" + expense.getAmount());
     }
 
     @Override
     public int getItemCount() {
-        return dateKeys.size();
+        return expenses.size();
     }
 
-    static class GroupedExpenseViewHolder extends RecyclerView.ViewHolder {
-        TextView dateHeader, totalAmount;
-        LinearLayout expenseContainer;
+    public static class ExpenseViewHolder extends RecyclerView.ViewHolder {
+        TextView expenseType, expenseName, expenseAmount;
 
-        GroupedExpenseViewHolder(View itemView) {
+        public ExpenseViewHolder(@NonNull View itemView) {
             super(itemView);
-            dateHeader = itemView.findViewById(R.id.tvDateHeader);
-            totalAmount = itemView.findViewById(R.id.tvTotal);
-            expenseContainer = itemView.findViewById(R.id.expenseContainer);
+            expenseType = itemView.findViewById(R.id.expense_type);
+            expenseName = itemView.findViewById(R.id.expense_name);
+            expenseAmount = itemView.findViewById(R.id.expense_amount);
         }
     }
 }

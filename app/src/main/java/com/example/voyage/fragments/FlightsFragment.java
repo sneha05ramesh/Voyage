@@ -28,7 +28,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -130,7 +132,7 @@ public class FlightsFragment extends Fragment {
                                 String duration = formatDuration(durationSecs);
 
                                 // Get price
-                                String price = itinerary.price.amount;
+                                int price = (int) Double.parseDouble(itinerary.price.amount);
                                 String flightId = itinerary.id;
                                 String bookingUrl = itinerary.bookingOptions.edges.get(0).node.bookingUrl;
 
@@ -150,7 +152,7 @@ public class FlightsFragment extends Fragment {
                                         formatApiDateTime(arrTime),
                                         duration,
                                         destination,
-                                        "$" + price,
+                                        price,
                                         flightId,
                                         bookingUrl
                                 ));
@@ -213,6 +215,7 @@ public class FlightsFragment extends Fragment {
     }
 
     private void bookFlight(Flight flight) {
+        // Open booking URL if available
         try {
             if (flight.bookingUrl != null && !flight.bookingUrl.isEmpty()) {
                 String fullUrl = "https://www.kiwi.com" + flight.bookingUrl;
@@ -223,15 +226,28 @@ public class FlightsFragment extends Fragment {
             Log.e("Booking URL", "Invalid booking URL: " + e.getMessage());
         }
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Save full flight data to Firestore
+        String uid = FirebaseAuth.getInstance().getUid();
+        String itineraryId = tripPlan.getId();
+
+        Map<String, Object> flightData = new HashMap<>();
+        flightData.put("airline", flight.airline);
+        flightData.put("duration", flight.duration);
+        flightData.put("destination", flight.destination);
+        flightData.put("price", flight.price);
+        flightData.put("flightId", flight.flightId);
+        flightData.put("bookingUrl", flight.bookingUrl);
+
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(uid)
                 .collection("itineraries")
-                .document(tripPlan.destination)
+                .document(itineraryId)
                 .collection("flights")
-                .add(flight)
+                .add(flightData)
                 .addOnSuccessListener(docRef -> Log.d("Firestore", "Flight booked and saved"))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error saving flight: " + e.getMessage()));
     }
+
+
 }

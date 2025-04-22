@@ -59,7 +59,7 @@ public class BookedHotelsBottomSheet extends BottomSheetDialogFragment {
                 .collection("users")
                 .document(uid)
                 .collection("itineraries")
-                .document(tripPlan.destination)
+                .document(tripPlan.getId()) // ✅ use correct itinerary ID
                 .collection("hotels")
                 .get()
                 .addOnSuccessListener(query -> {
@@ -77,15 +77,16 @@ public class BookedHotelsBottomSheet extends BottomSheetDialogFragment {
                                     .collection("users")
                                     .document(uid)
                                     .collection("itineraries")
-                                    .document(tripPlan.destination)
+                                    .document(tripPlan.getId())
                                     .collection("hotels")
                                     .document(docId)
                                     .delete()
                                     .addOnSuccessListener(aVoid -> dismiss());
                         }
-                    });
+                    }, tripPlan); // ✅ pass tripPlan to maintain structure
+
                     adapter.setBookedMode(true);
-                    adapter.setHotels(hotels);
+                    adapter.setHotelList(hotels); // ✅ correct method name
                     recycler.setAdapter(adapter);
                 });
     }

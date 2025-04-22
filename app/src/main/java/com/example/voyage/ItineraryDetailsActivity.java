@@ -53,7 +53,7 @@ public class ItineraryDetailsActivity extends AppCompatActivity {
                 case 1: tab.setText("✈️ Flights"); break;
                 case 2: tab.setText("🏨 Hotels"); break;
                 case 3: tab.setText("📍 Explore"); break;
-                case 4: tab.setText("💸 Spend"); break;
+                case 4: tab.setText("💸 Expense"); break;
                 case 5: tab.setText("🌦️ Weather"); break;
 
             }

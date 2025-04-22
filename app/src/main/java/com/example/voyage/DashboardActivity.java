@@ -83,6 +83,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     itineraryList.clear();
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         TripPlan plan = doc.toObject(TripPlan.class);
+                        plan.setId(doc.getId());
                         itineraryList.add(plan);
                     }
                     adapter.notifyDataSetChanged();

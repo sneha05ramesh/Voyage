@@ -38,6 +38,7 @@ import java.util.List;
 public class HotelsFragment extends Fragment {
 
     private static final String ARG_TRIP = "trip_plan";
+    private static final String TAG = "HotelsFragment";
     private TripPlan tripPlan;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -67,19 +68,13 @@ public class HotelsFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         HotelAdapter adapter = new HotelAdapter(getContext(), hotel -> {
-            FirebaseFirestore.getInstance()
-                    .collection("users")
-                    .document(FirebaseAuth.getInstance().getUid())
-                    .collection("itineraries")
-                    .document(tripPlan.destination)
-                    .collection("hotels")
-                    .add(hotel)
-                    .addOnSuccessListener(docRef -> {
-                        Toast.makeText(getContext(), "Hotel booked!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + Uri.encode(hotel.getName() + " " + hotel.getAddress())));
-                        startActivity(intent);
-                    });
-        });
+            Toast.makeText(getContext(), "Hotel booked!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.google.com/search?q=" + Uri.encode(hotel.getName() + " " + hotel.getAddress())));
+            startActivity(intent);
+        }, tripPlan);  // ✅ passing the full tripPlan to HotelAdapter
+
+
         recyclerView.setAdapter(adapter);
 
         viewBookedBtn.setOnClickListener(v -> {
@@ -93,8 +88,13 @@ public class HotelsFragment extends Fragment {
             String query = "hotels in " + destination;
 
             String apiKey = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE"; // Replace this with your actual key
-            String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + Uri.encode(query) + "&key=" + apiKey;
+            String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
+                    Uri.encode(query) +
+                    "&type=lodging" +
+                    "&key=" + apiKey;
 
+
+            Log.d(TAG, "Requesting hotels from: " + url);
             progressBar.setVisibility(View.VISIBLE);
 
             new Thread(() -> {
@@ -113,6 +113,8 @@ public class HotelsFragment extends Fragment {
                     }
 
                     JSONObject jsonResponse = new JSONObject(result.toString());
+                    Log.d(TAG, "Raw API response: " + jsonResponse.toString());
+
                     JSONArray results = jsonResponse.getJSONArray("results");
 
                     List<Hotel> hotels = new ArrayList<>();
@@ -122,17 +124,19 @@ public class HotelsFragment extends Fragment {
                         String address = item.getString("formatted_address");
                         double rating = item.has("rating") ? item.getDouble("rating") : 0.0;
                         String placeId = item.getString("place_id");
+                        int priceLevel = item.has("price_level") ? item.getInt("price_level") : -1;
 
-                        hotels.add(new Hotel(name, address, rating, placeId));
+                        Log.d(TAG, "Parsed hotel: " + name + " | Rating: " + rating + " | PriceLevel: " + priceLevel);
+                        hotels.add(new Hotel(name, address, rating, placeId, priceLevel));
                     }
 
                     requireActivity().runOnUiThread(() -> {
-                        adapter.setHotels(hotels);
+                        adapter.setHotelList(hotels);
                         progressBar.setVisibility(View.GONE);
                     });
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to fetch hotel data", e);
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Failed to load hotels", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);

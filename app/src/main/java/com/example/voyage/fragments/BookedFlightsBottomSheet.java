@@ -16,7 +16,6 @@ import com.example.voyage.models.Flight;
 import com.example.voyage.response.TripPlan;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -25,17 +24,13 @@ import java.util.List;
 
 public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
 
-    private static final String ARG_DEST = "destination";
     private static final String ARG_TRIP = "trip_plan";
-
-    private String destination;
     private TripPlan tripPlan;
 
     public static BookedFlightsBottomSheet newInstance(TripPlan tripPlan) {
         BookedFlightsBottomSheet sheet = new BookedFlightsBottomSheet();
         Bundle args = new Bundle();
         args.putSerializable(ARG_TRIP, tripPlan);
-        args.putString(ARG_DEST, tripPlan.destination);
         sheet.setArguments(args);
         return sheet;
     }
@@ -54,7 +49,6 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
 
         if (getArguments() != null) {
             tripPlan = (TripPlan) getArguments().getSerializable(ARG_TRIP);
-            destination = getArguments().getString(ARG_DEST);
         }
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -63,7 +57,7 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
                 .collection("users")
                 .document(uid)
                 .collection("itineraries")
-                .document(destination)
+                .document(tripPlan.getId())
                 .collection("flights")
                 .get()
                 .addOnSuccessListener(query -> {
@@ -77,7 +71,6 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
                     }
 
                     FlightAdapter adapter = new FlightAdapter(flights, flight -> {
-                        // Find document ID to delete
                         int index = flights.indexOf(flight);
                         if (index != -1 && index < docIds.size()) {
                             String docId = docIds.get(index);
@@ -86,7 +79,7 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
                                     .collection("users")
                                     .document(uid)
                                     .collection("itineraries")
-                                    .document(destination)
+                                    .document(tripPlan.getId())
                                     .collection("flights")
                                     .document(docId)
                                     .delete()
@@ -94,7 +87,7 @@ public class BookedFlightsBottomSheet extends BottomSheetDialogFragment {
                         }
                     });
 
-                    adapter.setBookedMode(true); // Show "Cancel" button instead of "Book"
+                    adapter.setBookedMode(true);
                     recycler.setAdapter(adapter);
                 });
     }

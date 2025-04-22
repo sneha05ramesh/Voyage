@@ -46,7 +46,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.ViewHolder
         holder.airline.setText(flight.airline);
         //holder.time.setText(flight.departureTime + " → " + flight.arrivalTime);
         holder.duration.setText("Duration: " + flight.duration);
-        holder.price.setText("Price: " + flight.price);
+        holder.price.setText("Price: $" + flight.price);
 
         // Toggle button label and function
         holder.buttonBook.setText(isBookedMode ? "Cancel" : "Book");
