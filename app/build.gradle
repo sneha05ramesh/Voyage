@@ -22,6 +22,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -52,6 +55,9 @@ dependencies {
     implementation libs.glide
     annotationProcessor libs.glide.compiler
     androidTestImplementation 'androidx.test:rules:1.5.0'
+    testImplementation 'org.mockito:mockito-core:4.8.0'
+    androidTestImplementation 'org.mockito:mockito-android:4.8.0'
+
 
 
 
