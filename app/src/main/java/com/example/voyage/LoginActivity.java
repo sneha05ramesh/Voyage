@@ -2,6 +2,7 @@ package com.example.voyage;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +14,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
+
+
+    private void showErrorToast(String message) {
+        View layout = getLayoutInflater().inflate(R.layout.custom_toast, null);
+
+        TextView text = layout.findViewById(R.id.toastText);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setView(layout);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.show();
+    }
 
     EditText usernameInput, passwordInput;
     Button loginButton;
@@ -36,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                showErrorToast("Please fill in all fields");
                 return;
             }
 
@@ -51,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 finish();
                             } else {
-                                Toast.makeText(this, "Please verify your email first", Toast.LENGTH_LONG).show();
+                                showErrorToast("Please verify your email first");
                             }
                         } else {
                             Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();

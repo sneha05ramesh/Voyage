@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -147,14 +148,21 @@ public class SafetyAlertsActivity extends AppCompatActivity {
                             ? response.body().alerts.alert : new ArrayList<>();
 
                     alertList.clear();
+                    HashSet<String> seen = new HashSet<>();
+
                     for (AlertResponse.Alert alert : alerts) {
-                        alertList.add(new SafetyAlert(
-                                alert.event,
-                                alert.desc,
-                                alert.effective,
-                                "WeatherAPI"
-                        ));
+                        String uniqueKey = alert.event + "|" + alert.desc + "|" + alert.effective;
+                        if (!seen.contains(uniqueKey)) {
+                            seen.add(uniqueKey);
+                            alertList.add(new SafetyAlert(
+                                    alert.event,
+                                    alert.desc,
+                                    alert.effective,
+                                    "WeatherAPI"
+                            ));
+                        }
                     }
+
 
                     adapter.notifyDataSetChanged();
                     noAlertsMessage.setVisibility(alertList.isEmpty() ? View.VISIBLE : View.GONE);

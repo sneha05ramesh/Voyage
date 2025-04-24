@@ -2,6 +2,7 @@ package com.example.voyage;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
+
+    private void showErrorToast(String message) {
+        View layout = getLayoutInflater().inflate(R.layout.custom_toast, null);
+
+        TextView text = layout.findViewById(R.id.toastText);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setView(layout);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.show();
+    }
+
 
     EditText fullNameInput, emailInput, passwordInput, confirmPasswordInput;
     RadioGroup genderRadioGroup;
@@ -45,19 +59,20 @@ public class SignupActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString();
             String confirmPassword = confirmPasswordInput.getText().toString();
 
+
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                showErrorToast("All fields are required");
+                return;
+            }
+
             int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
             if (selectedGenderId == -1) {
-                Toast.makeText(this, "Please select a gender", Toast.LENGTH_SHORT).show();
+                showErrorToast("Please select a gender");
                 return;
             }
 
             RadioButton selectedGenderButton = findViewById(selectedGenderId);
             String gender = selectedGenderButton.getText().toString();
-
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             if (!password.equals(confirmPassword)) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();

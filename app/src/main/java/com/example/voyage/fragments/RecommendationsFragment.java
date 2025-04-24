@@ -1,5 +1,7 @@
 package com.example.voyage.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,8 +41,8 @@ public class RecommendationsFragment extends Fragment {
     private static final String ARG_DESTINATION = "destination";
     private static final String ARG_INTERESTS = "interests";
 
-    private static final String GOOGLE_PLACES_API_KEY = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE"; //
-    private static final String STATIC_MAPS_API_KEY = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE";  //
+    private static final String GOOGLE_PLACES_API_KEY = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE";
+    private static final String STATIC_MAPS_API_KEY = "AIzaSyBrd7nhHlb6Xoy743A3-nq8AkN2R62TzoE";
 
     private String destination = "Paris";
     private List<String> userInterests = List.of("food", "culture");
@@ -93,9 +95,14 @@ public class RecommendationsFragment extends Fragment {
         mapRestaurants = view.findViewById(R.id.map_restaurants);
         mapActivities = view.findViewById(R.id.map_activities);
 
-        fetchPlaces("tourist_attraction", attractionsRecycler, mapAttractions, sectionAttractions);
+        fetchPlaces("tourist attraction", attractionsRecycler, mapAttractions, sectionAttractions);
         fetchPlaces("restaurant", restaurantsRecycler, mapRestaurants, sectionRestaurants);
         fetchPlaces("activity", activitiesRecycler, mapActivities, sectionActivities);
+
+        // Make maps clickable to open Google Maps
+        mapAttractions.setOnClickListener(v -> openInGoogleMaps("tourist attractions in " + destination));
+        mapRestaurants.setOnClickListener(v -> openInGoogleMaps("restaurants in " + destination));
+        mapActivities.setOnClickListener(v -> openInGoogleMaps("activities in " + destination));
     }
 
     private void fetchPlaces(String type, RecyclerView recyclerView, ImageView mapView, View sectionView) {
@@ -121,7 +128,8 @@ public class RecommendationsFragment extends Fragment {
                         JSONObject jsonObject = new JSONObject(json);
                         JSONArray results = jsonObject.getJSONArray("results");
 
-                        for (int i = 0; i < results.length(); i++) {
+                        int maxResults = Math.min(5, results.length());
+                        for (int i = 0; i < maxResults; i++) {
                             JSONObject obj = results.getJSONObject(i);
                             String name = obj.getString("name");
                             String address = obj.getString("formatted_address");
@@ -142,11 +150,15 @@ public class RecommendationsFragment extends Fragment {
 
                                 // Static Map
                                 try {
-                                    String encodedDest = URLEncoder.encode(destination, "UTF-8");
+                                    StringBuilder markersBuilder = new StringBuilder();
+                                    int limit = Math.min(5, places.size());
+                                    for (int i = 0; i < limit; i++) {
+                                        Place p = places.get(i);
+                                        markersBuilder.append("color:red|").append(p.getLatitude()).append(",").append(p.getLongitude());
+                                        if (i < limit - 1) markersBuilder.append("&markers=");
+                                    }
                                     String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?" +
-                                            "center=" + encodedDest +
-                                            "&zoom=13&size=600x300&maptype=roadmap&markers=color:red|" +
-                                            encodedDest +
+                                            "size=600x300&maptype=roadmap&markers=" + markersBuilder.toString() +
                                             "&key=" + STATIC_MAPS_API_KEY;
 
                                     Glide.with(requireContext()).load(mapUrl).into(mapView);
@@ -167,6 +179,18 @@ public class RecommendationsFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
             sectionView.setVisibility(View.GONE);
+        }
+    }
+
+    private void openInGoogleMaps(String query) {
+        try {
+            String encodedQuery = URLEncoder.encode(query, "UTF-8");
+            String uri = "https://www.google.com/maps/search/?api=1&query=" + encodedQuery;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setPackage("com.google.android.apps.maps");
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Unable to open Google Maps", Toast.LENGTH_SHORT).show();
         }
     }
 }
